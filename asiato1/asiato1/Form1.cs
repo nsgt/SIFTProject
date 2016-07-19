@@ -23,11 +23,22 @@ namespace asiato1
 
         private void button1_Click(object sender, EventArgs e)
         {
-            IncludeFile();
+           IncludeFile();
+
+            //ガウシアンフィルタをかける
             Bitmap gyate = new Bitmap(pictureBox1.Image);//Gaussianフィルタ呼び出し
-           Filter fn = new Filter();
+            Filter fn = new Filter();
             gyate = fn.Apply(gyate,5);
-            pictureBox1.Image = gyate;
+
+            //グレースケール化
+            Bitmap img = new Bitmap(gyate);
+            Grayscale glayImg = new Grayscale();
+            img = glayImg.CreateGrayscaleImage(img);
+
+            //表示
+            pictureBox1.Image = img;
+            
+            
         }
 
         private void IncludeFile()
