@@ -7,3 +7,12 @@ C:\Users\kanag_000\Pictures\情報通信プロジェクト\asiato1\asiato1\obj\D
 C:\Users\kanag_000\Pictures\情報通信プロジェクト\asiato1\asiato1\obj\Debug\asiato1.csproj.GenerateResource.Cache
 C:\Users\kanag_000\Pictures\情報通信プロジェクト\asiato1\asiato1\obj\Debug\asiato1.exe
 C:\Users\kanag_000\Pictures\情報通信プロジェクト\asiato1\asiato1\obj\Debug\asiato1.pdb
+C:\Users\yusuke\Documents\Visual Studio 2015\Projects\asiato1\asiato1\bin\Debug\asiato1.exe.config
+C:\Users\yusuke\Documents\Visual Studio 2015\Projects\asiato1\asiato1\obj\Debug\asiato1.exe
+C:\Users\yusuke\Documents\Visual Studio 2015\Projects\asiato1\asiato1\obj\Debug\asiato1.pdb
+C:\Users\yusuke\Documents\Visual Studio 2015\Projects\asiato1\asiato1\obj\Debug\asiato1.csprojResolveAssemblyReference.cache
+C:\Users\yusuke\Documents\Visual Studio 2015\Projects\asiato1\asiato1\obj\Debug\asiato1.Form1.resources
+C:\Users\yusuke\Documents\Visual Studio 2015\Projects\asiato1\asiato1\obj\Debug\asiato1.Properties.Resources.resources
+C:\Users\yusuke\Documents\Visual Studio 2015\Projects\asiato1\asiato1\obj\Debug\asiato1.csproj.GenerateResource.Cache
+C:\Users\yusuke\Documents\Visual Studio 2015\Projects\asiato1\asiato1\bin\Debug\asiato1.exe
+C:\Users\yusuke\Documents\Visual Studio 2015\Projects\asiato1\asiato1\bin\Debug\asiato1.pdb
