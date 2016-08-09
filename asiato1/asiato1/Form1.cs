@@ -31,9 +31,11 @@ namespace asiato1
 
             Bitmap ORG = IncludeFile();
             ColorChange color = new ColorChange();
+            SIFT sift = new SIFT();
+            List<byte[,]> D = new List<byte[,]>( );
             IMG = color.rgb2gray(ORG);
-            Filter fn = new Filter();
-            IMG = fn.gaussian(IMG, 9, 0.32);
+            D = sift.DoG(IMG, 2, 0.2, 5);
+            IMG = D[0];
             imshow(IMG);
         }
        

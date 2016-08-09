@@ -6,32 +6,34 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Runtime.InteropServices;
 
-/*namespace asiato1
+namespace asiato1
 {
     class SIFT
     {
-       Filter f = new Filter();
-        
-        public List<ORG> DoG(ORG ORG,int k,int sigma,int kMax)
+       
+        Filter f = new Filter();
+
+        public List<byte[,]> DoG(byte[,] ORG, double k, double sigma, int kMax)
         {
-            List<ORG> L = new List<ORG> { };
-            List<ORG> D = new List<ORG> { };
-            
-            for (int i=0;i< kMax; i++)
-            {
-              L.Add(f.Apply(ORG, (i+1)*sigma));
-            }
+            List<byte[,]> D = new List<byte[,]>(); 
+            List<byte[,]> L = new List<byte[,]>();
+            byte[,] IMG = new byte[ORG.GetLength(0), ORG.GetLength(1)];
             for (int i = 0; i < kMax; i++)
             {
-                for (int x = 0; x < 255; x++)
+                L.Add(f.gaussian(ORG, 7, Math.Pow(k, (i)) * sigma));
+            }
+            for (int j = 0; j < kMax - 1; j++)
+            {
+                for (int x = 0; x < ORG.GetLength(0); x++)
                 {
-                    for (int y = 0; y < 255; y++)
-                    { 
+                    for (int y = 0; y < ORG.GetLength(1); y++)
                     {
-                        D.Add(L[i].GetPixel(x, y) - L[i+1].GetPixel(x, y));
+                        IMG[x, y] = (byte)(Math.Abs((byte)L[j].GetValue(x, y) - (byte)L[j + 1].GetValue(x, y)));
                     }
                 }
-                }
+               D.Add(IMG);
+            }
+            return D;
         }
     }
-}*/
+}
