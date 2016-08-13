@@ -32,10 +32,12 @@ namespace asiato1
             Bitmap ORG = IncludeFile();
             ColorChange color = new ColorChange();
             SIFT sift = new SIFT();
-            List<byte[,]> D = new List<byte[,]>( );
+            //List<byte[,]> D = new List<byte[,]>( );
+
             IMG = color.rgb2gray(ORG);
-            D = sift.DoG(IMG, 2, 0.2, 5);
-            IMG = D[0];
+            //D = sift.DoG(IMG, Math.Pow(2,1/3), 0.2, 6);
+            //IMG = D[1];
+            IMG = sift.down_sampling(IMG, 5);
             imshow(IMG);
         }
        
@@ -76,11 +78,11 @@ namespace asiato1
                         );
                 }
             }
-            Bitmap canvas = new Bitmap(w, h);
+            Bitmap canvas = new Bitmap(ORG.GetLength(0), ORG.GetLength(1));
             //ImageオブジェクトのGraphicsオブジェクトを作成する
             Graphics g = Graphics.FromImage(canvas);
             //画像のサイズをcanvasに描画する
-            g.DrawImage(IMG, 0, 0, w, h);
+            g.DrawImage(IMG, 0, 0, ORG.GetLength(0), ORG.GetLength(1));
             //Imageオブジェクトのリソースを解放する
             IMG.Dispose();
             //PictureBox1に表示する
