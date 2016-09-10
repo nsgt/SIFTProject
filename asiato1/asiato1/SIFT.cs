@@ -8,20 +8,22 @@ using System.Runtime.InteropServices;
 
 namespace asiato1
 {
-    public class SIFT
+    class SIFT
     {
-        struct KEYPOINT
+        public struct KEYPOINT
         {
             double x;           //位置x
             double y;           //位置y
 
             int o;              //オクターブ数
             int s;              //スケール
-            KEYPOINT(double _x, double _y, int _o, int _s)
+            public KEYPOINT(double _x, double _y, int _o, int _s)
             {
                 x = _x; y = _y; o = _o; s = _s;
             }
-        };
+        }
+        int minW = 20;
+        int oct =  0;
 
         Filter f = new Filter();
 
@@ -32,7 +34,7 @@ namespace asiato1
             byte[,] IMG = new byte[ORG.GetLength(0), ORG.GetLength(1)];
             for (int i = 0; i < kMax; i++)
             {
-                L.Add(f.gaussian(ORG, 9, Math.Pow(k, (i)) * sigma));
+                L.Add(f.gaussian(ORG,11, Math.Pow(k,i) * sigma));
             }
             for (int j = 0; j < kMax - 1; j++)
             {
@@ -40,53 +42,107 @@ namespace asiato1
                 {
                     for (int y = 0; y < ORG.GetLength(1); y++)
                     {
-                        IMG[x, y] = (byte)(Math.Abs((byte)L[j].GetValue(x, y) - (byte)L[j + 1].GetValue(x, y)));
+                        if ((byte)L[j].GetValue(x, y) >= (byte)L[j + 1].GetValue(x, y))
+                        {
+                            IMG[x, y] = (byte)((byte)L[j].GetValue(x, y) - (byte)L[j + 1].GetValue(x, y));
+                        }
+                        else
+                        {
+                            IMG[x, y] = 0;
+                        }
                     }
+
                 }
                D.Add(IMG);
             }
             return D;
         }
-        public List<KEYPOINT> serachExtearmValue(List<byte[,]> DoGList)
+        public List<KEYPOINT> serachKeypoint(byte[,] ORG,int S,double sigma0)
         {
             List<KEYPOINT> pointsList = new List<KEYPOINT>();
-            bool flag = false;
-            for (int i = 1; i < DoGList.Count - 2; i++)
+            List<byte[,]> D = new List<byte[,]>();
+            List<List<byte[,]>> DoGList = new List<List<byte[,]>>();
+            bool[,] flag =new bool[ORG.GetLength(0),ORG.GetLength(1)];
+            bool isMax = false;
+            bool isSmall = false;
+            double k = Math.Pow(2, 1 /(double) S);
+            for(int W = ORG.GetLength(0);W>minW;W/=2) {
+                D = DoG(ORG, k, sigma0, S + 3);
+                DoGList.Add(D);
+                oct += 1;
+                ORG= down_sampling(ORG);
+            }
+            for (int oct = 0; oct < DoGList.Count; oct++)
             {
-                for (int x = 0; x <DoGList[i].GetLength(0); x++)
+                for (int scale = 1; scale < S + 1; scale++)
                 {
-                    for (int y = 0; y <DoGList[i].GetLength(1) ; y++)
+                    for (int x = 1; x < DoGList[oct][scale].GetLength(0) - 1; x++)
                     {
-                        for(int n = -1; n <=1; n++)
+                        for (int y = 1; y < DoGList[oct][scale].GetLength(1) - 1; y++)
                         {
-                            for(int k = -1; k <= 1; k++)
+                            if (flag[x, y] == true)
                             {
-                                if (n + x > -1 && n + x < DoGList[i].GetLength(0) && k + y > -1 && k + y < DoGList[i].GetLength(1))
+                                continue;
+                            }
+                            isMax = true;
+                            isSmall = true;
+
+                            for (int s = scale-1; s <= scale+1; s++)
+                            {
+                                for (int w = x - 1; w <= x + 1; w++)
                                 {
-                                    if((byte)DoGList[i].GetValue(x,y)>(byte)DoGList[i-1].GetValue(x+n, y+k))
+                                    for (int h = y - 1; h <= y + 1; h++)
                                     {
-                                        
+                                       
+
+                                        if ( w == x && h == y) continue;
+                                        if (isMax && (byte)DoGList[oct][scale].GetValue(x, y) <= (byte)DoGList[oct][s].GetValue(w, h))
+                                        {
+                                            isMax = false;
+                                        }
+
+                                        if (isSmall && (byte)DoGList[oct][scale].GetValue(x, y) >= (byte)DoGList[oct][s].GetValue(w, h))
+                                        {
+                                            isSmall = false;
+                                        }
+                                        if (isSmall == false && isMax == false)
+                                        {
+                                            break;
+                                        }
+                                    }
+                                    if (isSmall == false && isMax == false)
+                                    {
+                                        break;
                                     }
                                 }
+                                if (isSmall == false && isMax == false)
+                                {
+                                    break;
+                                }
+                            }
+                            if (isMax || isSmall)
+                            {
+                                KEYPOINT Keypoint = new KEYPOINT(x, y, oct, scale);
+                                pointsList.Add(Keypoint);
+                                flag[x, y] = true;
                             }
                         }
-                        
                     }
                 }
             }
             return pointsList;
         }
-        public byte[,] down_sampling(byte[,] ORG,int scale)
+        public byte[,] down_sampling(byte[,] ORG)
         {
-            int W = ORG.GetLength(0) / scale;
-            int H = ORG.GetLength(1) / scale;
+            int W = ORG.GetLength(0) / 2;
+            int H = ORG.GetLength(1) / 2;
             byte[,] IMG = new byte[W,H];
 
             for (int x = 0; x < W; x++)
             {
                 for (int y = 0; y < H; y++)
                 {
-                    IMG[x,y] = (byte)ORG[scale * x,scale * y];
+                    IMG[x,y] = (byte)ORG[2*x, 2*y];
                 }
             }
             return IMG;

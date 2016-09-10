@@ -20,6 +20,8 @@ namespace asiato1
         int h = 256;
         byte [,] IMG;
         int sw = 0 ;
+        List<SIFT.KEYPOINT> list=new List<SIFT.KEYPOINT>();
+        List<byte[,]> DoGlist = new List<byte[,]>();
         public Form1()
         {
             InitializeComponent();
@@ -32,12 +34,18 @@ namespace asiato1
             Bitmap ORG = IncludeFile();
             ColorChange color = new ColorChange();
             SIFT sift = new SIFT();
-            //List<byte[,]> D = new List<byte[,]>( );
-
+            Filter f = new Filter();
             IMG = color.rgb2gray(ORG);
-            //D = sift.DoG(IMG, Math.Pow(2,1/3), 0.2, 6);
-            //IMG = D[1];
-            IMG = sift.down_sampling(IMG, 5);
+            list = sift.serachKeypoint(IMG, 3,1.6);
+            /*DoGlist = sift.DoG(IMG, Math.Pow(2, 1 / (double)3), 1.6, 6);
+            for (int x = 0; x < DoGlist[0].GetLength(0); x++)
+            {
+                for (int y = 0; y <DoGlist[0].GetLength(1); y++)
+                {
+                    IMG[x, y] = (byte)(Math.Abs((byte)DoGlist[0].GetValue(x, y) - (byte)DoGlist[1].GetValue(x, y)));
+                }
+            }*/
+       
             imshow(IMG);
         }
        

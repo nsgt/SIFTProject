@@ -13,8 +13,7 @@ namespace asiato1
     class Filter {
         public byte[,] gaussian(byte[,] ORG, int size, double sigma)
         {
-            if (size >= 3)
-            {
+          
                 byte[,] IMG = new byte[ORG.GetLength(0), ORG.GetLength(1)];
                 for (int i = 0; i < ORG.GetLength(1); i++)
                 {
@@ -29,7 +28,7 @@ namespace asiato1
                             {
                                 if (j + n >= 0 && j + n < ORG.GetLength(0) && i + k >= 0 && i + k < ORG.GetLength(1))
                                 {
-                                    mask = Math.Exp(-(Math.Pow(k,2) + Math.Pow(n,2)) / 2 * Math.Pow(sigma,2));
+                                    mask = (1/(2*Math.PI*Math.Pow(sigma,2)))*Math.Exp(-(Math.Pow(k,2) + Math.Pow(n,2)) / (2 * Math.Pow(sigma,2)));
                                     sumweight += mask;
                                     sum += ((double)ORG[j+n, i+k]) * mask;
                                 }
@@ -53,13 +52,8 @@ namespace asiato1
                 }
                 return IMG;
             }
-            else
-            {
-                return ORG;
-            }
-
         }
     }
-}
+
 
     
